@@ -5,11 +5,28 @@
     box-sizing: border-box; /*Resetando a borda da caixa pelo tamanho definido da caixa e não pelo conteúdo*/
 }
 :root{
-    --dark-blue: #363f5f;
+    --dark-blue: #363f5f;/* Declarando Variáveis no CSS*/
+    --green: #49AA26;
+    --light-green:#3dd705;
+    --light-red: #e92929;
+}
+html{
+    font-size: 93.75% /* 15px - Trabalhando a Responsividade*/;
 }
 body{
     background: #f0f2f5;
     font-family: 'Poppins', sans-serif;
+}
+.sr-only{/*Trick CSS para deixar as informações invisiveis aos olhos porém não aos leitores de Tela, ajuda na acessibilidade*/
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border-width: 0;
 }
 
 .container{
@@ -22,6 +39,48 @@ h2{
     margin-bottom: .8rem;
     color: var(--dark-blue);
     font-weight: 400;
+
+}
+/*Links & Buttons =======================================================*/
+a{
+    color: var(--green);
+    text-decoration: none;
+}
+a:hover{
+    color:var(--light-green);
+}
+button{
+    width: 100%;
+    height: 50px;
+    border: none;
+    color: #fff;
+    background: var(--green);
+    padding: 0;
+    cursor: pointer;
+    border-radius: .25rem;
+
+}
+button:hover{
+    background: var(--light-green);
+}
+.button.new{
+    display: inline-block;
+    margin-bottom: .8rem;
+
+}
+.button.cancel{
+    color:var(--light-red);
+    border: 2px var(--light-red) solid;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: .25rem;
+    cursor: pointer;
+    opacity: 0.6;
+}
+.button.cancel:hover{
+    opacity: 1;
 }
 /*Header =======================================================*/
 header{
@@ -48,10 +107,14 @@ header{
     border-radius: .25rem;
     margin-bottom: 2rem;
     color: var(--dark-blue);
+
 }
 .card h3{
     font-weight: 400;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .card p{
     font-size: 2rem;
@@ -59,10 +122,15 @@ header{
     margin-top: 1rem;
 }
 .card.total{
-    background: #49aa26;
+    background: var(--green);
     color: #fff;
 }
 /*Table =======================================================*/
+#transaction{
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+}
 #data-table{
     width: 100%;
     border-spacing: 0 0.5rem;
@@ -70,6 +138,9 @@ header{
 }
 table thead tr th:first-child,table tbody tr td:first-child{/* Acessando o primeiro filho semântico de cada parte da Tabela*/
     border-radius: .25rem 0 0 .25rem;
+}
+table thead tr th:last-child,table tbody tr td:last-child{
+    border-radius: 0 0.25rem 0.25rem 0;
 }
 table th{
     background: #fff;
@@ -92,10 +163,63 @@ td.description{
     color: var(--dark-blue);
 }
 td.expense{
-    color: #e92929;
+    color: var(--light-red);
 }
 td.income{
     color:#12a454;
+}
+/*Modal =======================================================*/
+.modal-overlay{
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    position: fixed;
+    top: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+}
+.modal-overlay.active{
+    visibility: visible;
+    opacity: 1;
+}
+.modal{
+    background: #f0f2f5;
+    padding: 2.4rem;
+    width: 90%;
+    max-width: 500px;
+}
+/*Form =======================================================*/
+#form{
+    max-width: 500px;
+    
+}
+#form h2{
+    margin-top: 0;
+}
+#form form input{
+    border: none;
+    border-radius: 0.2rem;
+    padding: .8rem;
+    width: 100%;
+}
+.input-group{
+    margin-top: 0.8rem;
+}
+.input-group small{
+    opacity: 0.4;
+}
+.input-group.actions{
+    display: flex;
+    justify-content: space-between;
+    align-items:center ;
+}
+.input-group.actions .button,
+.input-group.actions button{
+    width: 48%;
+
 }
 /*Footer =======================================================*/
 footer{
@@ -103,4 +227,15 @@ footer{
     padding: 4rem 0 2rem;
     color: var(--dark-blue);
     opacity: 0.6;
+}
+/*Responsive =======================================================*/
+@media(min-width:800px){/*A partir de 800px ele usará esta estilização*/
+html{
+    font-size: 87.5%;
+}
+#balance{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+}
 }
