@@ -5,11 +5,25 @@
     box-sizing: border-box; /*Resetando a borda da caixa pelo tamanho definido da caixa e não pelo conteúdo*/
 }
 :root{
-    --dark-blue: #363f5f;
+    --dark-blue: #363f5f;/* Declarando Variáveis no CSS*/
+}
+html{
+    font-size: 93.75% /* 15px - Trabalhando a Responsividade*/;
 }
 body{
     background: #f0f2f5;
     font-family: 'Poppins', sans-serif;
+}
+.sr-only{/*Trick CSS para deixar as informações invisiveis aos olhos porém não aos leitores de Tela, ajuda na acessibilidade*/
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border-width: 0;
 }
 
 .container{
@@ -22,6 +36,20 @@ h2{
     margin-bottom: .8rem;
     color: var(--dark-blue);
     font-weight: 400;
+
+}
+/*Links & Buttons =======================================================*/
+a{
+    color: #49AA26;
+    text-decoration: none;
+}
+a:hover{
+    color:#3dd705;
+}
+.button.new{
+    display: inline-block;
+    margin-bottom: .8rem;
+
 }
 /*Header =======================================================*/
 header{
@@ -48,10 +76,14 @@ header{
     border-radius: .25rem;
     margin-bottom: 2rem;
     color: var(--dark-blue);
+
 }
 .card h3{
     font-weight: 400;
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 .card p{
     font-size: 2rem;
@@ -64,12 +96,17 @@ header{
 }
 /*Table =======================================================*/
 #data-table{
+    display: block;
     width: 100%;
     border-spacing: 0 0.5rem;
     color:#969cb3;
+    overflow-x: auto;
 }
 table thead tr th:first-child,table tbody tr td:first-child{/* Acessando o primeiro filho semântico de cada parte da Tabela*/
     border-radius: .25rem 0 0 .25rem;
+}
+table thead tr th:last-child,table tbody tr td:last-child{
+    border-radius: 0 0.25rem 0.25rem 0;
 }
 table th{
     background: #fff;
@@ -103,4 +140,15 @@ footer{
     padding: 4rem 0 2rem;
     color: var(--dark-blue);
     opacity: 0.6;
+}
+/*Responsive =======================================================*/
+@media(min-width:800px){/*A partir de 800px ele usará esta estilização*/
+html{
+    font-size: 87.5%;
+}
+#balance{
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 2rem;
+}
 }
