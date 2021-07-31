@@ -35,10 +35,16 @@ const transactions = [
 
 // Criar funções de calculos.
 const Transaction = {
-  incomes() {
+    all:transactions,// Trazendo para ca pois no futuro  esta váriavel será salva no local storage do navegador.
+    add(transaction){
+        Transaction.all.push(transaction)
+
+        App.reload()//Executa esta função de controle.
+    },
+    incomes() {
     // Soma das entradas de valores
     let income = 0
-    transactions.forEach(function(transactions) {// Para cada transactions roda a função
+    Transaction.all.forEach(function(transactions) {// Para cada transactions roda a função
         if(transactions.amount>0){
             income += transactions.amount;
         }
@@ -48,7 +54,7 @@ const Transaction = {
   expenses() {
     // Soma das saídas de valores
     let saidas = 0
-    transactions.forEach(function(transactions) {// Para cada transactions roda a função
+    Transaction.all.forEach(function(transactions) {// Para cada transactions roda a função
         if(transactions.amount<0){
             saidas += transactions.amount;
         }
@@ -95,7 +101,10 @@ const DOM = {
       document
             .getElementById('totalDisplay')
             .innerHTML = Utils.formatCurrency(Transaction.total())
-        }
+        },
+  clearTransactions (){
+    DOM.transactionsContainer.innerHTML = ""
+  }     
 }
 const Utils = {
     formatCurrency(value){
@@ -111,7 +120,27 @@ const Utils = {
     }
 }
 
-transactions.forEach(function(transaction){// Para cada Transação eu rodo a função transaction, meio que um "for" chique
-    DOM.addTransaction(transaction)
+// Váriavel de controle de app.
+
+const App = {
+  init(){// Inicio
+    Transaction.all.forEach(function(transaction){// Para cada Transação eu rodo a função transaction, meio que um "for" chique
+      DOM.addTransaction(transaction)
+  })
+  DOM.updateBalance()
+
+  },
+  reload(){
+    DOM.clearTransactions()
+    App.init()//Chamando o inicio novamente após adcionar uma nova transação.
+
+  },
+}
+App.init()
+
+Transaction.add({// Local que irá adcionar novas transações
+  id:39,
+  description:"Salário",
+  amount:400000,
+  date: "24/01/2021"
 })
-DOM.updateBalance()
