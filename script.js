@@ -3,33 +3,37 @@ const modal = {
     document
       .querySelector(".modal-overlay") // acesso a classe da modal
       .classList.add("active"); // Adciono na classe o Active
+    document
+      .querySelector(".footer") // Tratamento de quando o modal estiver aberto ou fechado
+      .classList.remove("habilitado") // Tratamento de quando o modal estiver aberto ou fechado
   },
   close() {
     document
       .querySelector(".modal-overlay") // acesso a classe da modal
       .classList.remove("active"); // Removendo a classe
-  },
-};
+    document
+    document
+      .querySelector(".footer") // Tratamento de quando o modal estiver aberto ou fechado
+      .classList.add("habilitado")  // Tratamento de quando o modal estiver aberto ou fechado
+    },
+  };
+  const Storage = {
+    get() {
+      
+        return JSON.parse(localStorage.getItem("dev.finances:transactions")) || []
+    },
+
+    set(transactions) {
+        localStorage.setItem("dev.finances:transactions", JSON.stringify(transactions))
+    }
+}
+
 
 // Criar funções de calculos.
 const Transaction = {
-  all: [
-    {
-      description: "Luz",
-      amount: -50000,
-      date: "23/01/2021",
-    },
-    {
-      description: "Criação de Website",
-      amount: 500000,
-      date: "23/01/2021",
-    },
-    {
-      description: "Internet",
-      amount: -20000,
-      date: "23/01/2021",
-    },
-  ], // Trazendo para ca pois no futuro  esta váriavel será salva no local storage do navegador.
+
+  all: Storage.get(),
+  
   add(transaction) {
     Transaction.all.push(transaction);
 
@@ -75,12 +79,13 @@ const DOM = {
   transactionsContainer: document.querySelector("#data-table tbody"),
 
   addTransaction(transaction, index) {
-    console.log(`${Transaction.all}`); //Responsavel por indexar a transação
+   //Responsavel por indexar a transação
     const tr = document.createElement("tr");
-    tr.innerHTML = DOM.innerHTMLTransaction(transaction);
+    tr.innerHTML = DOM.innerHTMLTransaction(transaction,index);
+    tr.dataset.index = index // Cada transação esta reebdno o seu index de array.
     DOM.transactionsContainer.appendChild(tr);
   },
-  innerHTMLTransaction(transaction) {
+  innerHTMLTransaction(transaction,index) {
     const CSSclass = transaction.amount > 0 ? "income" : "expense"; // Aqui foi criada uma constante e usando ternário seleciona a classe certa
     const amount = Utils.formatCurrency(transaction.amount); // Amount captura infomações da constante Utils
     const html = `
@@ -88,7 +93,7 @@ const DOM = {
                 <td class="${CSSclass}">${amount}</td>
                 <td class="date">${transaction.date}</td>
                 <td>
-                    <img src="./assets/minus.svg" alt="Remover transação">
+                    <img onclick ="Transaction.remove(${index})" src="./assets/minus.svg" alt="Remover transação">
                 </td>
                  `;
     return html;
@@ -112,6 +117,11 @@ const DOM = {
 
 //Tratando valores em R$
 const Utils = {
+  formatAmount(value){
+    value=Number(value)*100//Tratando dado que chegará com pontos ou virgula.
+
+    return Math.round(value)// Arredondadno o número.
+  },
   formatCurrency(value) {
     const signal = Number(value) < 0 ? "-" : ""; // Aqui usamos novamente o ternário para tratar o sinal.
     //Regex para formatar a Moeda
@@ -124,6 +134,11 @@ const Utils = {
     });
     return signal + value;
   },
+  formatDate(date){// tratando dado para "separar" dados da string.
+    const splittedDate = date.split("-")
+    
+    return `${splittedDate[2]}/${splittedDate[1]}/${splittedDate[0]}`
+  }
 };
 
 //Tratando dados inseridos no formulário.
@@ -142,35 +157,68 @@ getValues(){// Recebdndo dados do form e colocando nesta função
 },
   validateFields(){
     const { description, amount, date } = Form.getValues()
+    // Trim varre os campos e caso algum esteja vázio ele usa o Throw , que neste caso é um erro.
+    if(description.trim()===""||
+       amount.trim()===""||
+       date.trim()===""){
+          throw new Error("Por favor, preencha todos os campos")
+    }
   },
-  submit(event){
+  formatValues(){
+    let { description, amount, date } = Form.getValues()
+
+    amount = Utils.formatAmount(amount)
+
+    date = Utils.formatDate(date)
+
+    return{
+      description,
+      amount,
+      date
+    }
+  },
+  clearFields(){
+    Form.description.value = ""
+    Form.amount.value = ""
+    Form.date.value = ""
+  },
+    
+  submit(event){// Quando o enviar for clicado tudas as funções são disparadas.
     event.preventDefault()
-    Form.validateFields()
+    try{
+      //validação de campos
+      Form.validateFields()
+      //Salvando nova transação
+      const transaction = Form.formatValues()
+      Transaction.add(transaction)
+      // Limpando os campos
+      Form.clearFields()
+      //Fechar o modal
+      modal.close()
+
+    } catch(error){// o Catch captura o erro e exibi na tela usando o alert.
+      alert(error.message)
+    }
   }
 }
-
+// Tratamento de informação para carregar na memória do navegador.
 // Váriavel de controle de app.
 const App = {
   init() {
     // Inicio
-    Transaction.all.forEach(function (transaction) {
+    Transaction.all.forEach(DOM.addTransaction)
       // Para cada Transação eu rodo a função transaction, meio que um "for" chique
-      DOM.addTransaction(transaction);
-    });
-    DOM.updateBalance();
+      
+   
+    DOM.updateBalance()
+    Storage.set(Transaction.all)
   },
   reload() {
     DOM.clearTransactions();
     App.init(); //Chamando o inicio novamente após adcionar uma nova transação.
   },
-};
+}
 
-App.init();
+App.init()
 
-/*Transaction.add({
-  // Local que irá adcionar novas transações
-  description: "Salário",
-  amount: 400000,
-  date: "24/01/2021",
-});*/
-//Transaction.remove(0)//Chamando a função
+

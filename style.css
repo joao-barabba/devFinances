@@ -221,12 +221,18 @@ td.income{
 
 }
 /*Footer =======================================================*/
-footer{
+
+.footer.habilitado{
     text-align: center;
     padding: 4rem 0 2rem;
     color: var(--dark-blue);
+    visibility: visible;
     opacity: 0.6;
 }
+.footer{
+    opacity: 0;
+}
+
 /*Responsive =======================================================*/
 @media(min-width:800px){/*A partir de 800px ele usará esta estilização*/
 html{
