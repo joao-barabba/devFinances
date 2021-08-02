@@ -18,12 +18,12 @@ const modal = {
     },
   };
   const Storage = {
-    get() {
+    get() {// Pegando dados e manipulando de string para Array.
       
         return JSON.parse(localStorage.getItem("dev.finances:transactions")) || []
     },
 
-    set(transactions) {
+    set(transactions) {// Setando informações para o o get pegar e manipulando ela para string.
         localStorage.setItem("dev.finances:transactions", JSON.stringify(transactions))
     }
 }
